@@ -4,10 +4,9 @@ import com.example.banking.dto.AccountDto;
 import com.example.banking.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -22,5 +21,19 @@ public class AccountController {
     @PostMapping("/create")
     public ResponseEntity<AccountDto> addAccount(@RequestBody AccountDto accountDto){
         return new ResponseEntity<>(accountService.createAccount(accountDto), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/byId/{id}")
+    public ResponseEntity<AccountDto> getAccountById(@PathVariable Long id){
+        AccountDto accountById = accountService.getAccountById(id);
+        return new ResponseEntity<>(accountById, HttpStatus.OK);
+    }
+
+//    Deposit Money
+    @PutMapping("/{id}/deposit")
+    public ResponseEntity<AccountDto> depositMoney(@PathVariable Long id, @RequestBody Map<String, Double> request){
+        Double amount = request.get("amount");
+        AccountDto deposit = accountService.deposit(id, amount);
+        return new ResponseEntity<>(deposit, HttpStatus.OK);
     }
 }
